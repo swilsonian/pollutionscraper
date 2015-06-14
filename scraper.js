@@ -9,7 +9,7 @@ var catalog_urls = [];
 var factory_urls = [];
 var host_url = '';
 var fs = require("fs");
-var csv_fields = [['申報時段', '廢棄物名稱', '廢棄物清理方式', '產出申報量',	'單位', '申報狀態']];
+var csv_fields = [['裁處時間', '管轄縣市', 	'裁處書字號', '違反時間', '違反法令', '裁罰金額', '是否訴願', '訴願結果', '陳情結果']];
 var timestamp = Math.floor(Date.now() / 1000);
 var csv_filename = "/tmp/scrape_file_" + search_term + '_' + timestamp + ".csv";
 fs.write(csv_filename, Convert2DArrayToCSV(csv_fields), 'w');
@@ -88,11 +88,11 @@ function parseCatalogPage(destination) {
                 // Get table rows
                 var tr_data = this.evaluate(function() {
                     //var nodes = document.querySelectorAll('#divLatestReport > div:nth-child(3) > table > tbody > tr');
-                    var nodes = document.querySelectorAll('#divLatestReport div.wasHead.textCenter.polHead + table > tbody > tr');
+                    var nodes = document.querySelectorAll('#divLatestReport div.penaltyHead.textCenter.polHead + table > tbody > tr');
                     var processed_table_rows = Array.prototype.map.call(nodes, function(tr) {
-                        //if (tr.children.length != 6) {
-                        //    return null; // skip
-                        //}
+                        if (tr.children.length != 9) {
+                            return null; // skip summary row at bottom
+                        }
                         return [
                              // Parse all table rows for text and save
                              tr.children[0].innerText.trim(),
@@ -101,6 +101,9 @@ function parseCatalogPage(destination) {
                              tr.children[3].innerText.trim(),
                              tr.children[4].innerText.trim(),
                              tr.children[5].innerText.trim(),
+                             tr.children[6].innerText.trim(),
+                             tr.children[7].innerText.trim(),
+                             tr.children[8].innerText.trim(),
                         ];
                     });
                     return processed_table_rows;

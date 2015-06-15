@@ -40,8 +40,9 @@ function Convert2DArrayToCSV(objArray) {
             delimiter_escaped_value = array[i][index].replace(/"/g, '""')
             line += '"' + delimiter_escaped_value + '"';
         }
-
-        str += line + '\r\n';
+        if(array[i].length){
+          str += line + '\r\n';
+        }
     }
 
     return str;
